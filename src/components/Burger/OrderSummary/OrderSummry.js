@@ -3,7 +3,6 @@ import Aux from '../../../hoc/ReactAux';
 import Button from '../../UI/Button/Button';
 
 const orderSummary = (props) => {
-  console.log(props.continueHandler);
 
   const ingredientSummary = Object.keys(props.ingredients).map(el => {
     return <li key={el}>{el}: {props.ingredients[el]}</li>
@@ -15,6 +14,7 @@ const orderSummary = (props) => {
       <ul>
         <span style={{ textTransform: 'capitalize' }}>{ingredientSummary}</span>
       </ul>
+      <p><strong>Price: {props.price.toFixed(2)}</strong></p>
       <Button
         clicked={props.orderContinued}
         btnType={'Success'}>

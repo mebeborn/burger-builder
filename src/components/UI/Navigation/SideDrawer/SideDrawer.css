@@ -7,9 +7,9 @@
   max-width: 70%;
   width: 280px;
   padding: 36px 16px;
-  transition: transform 0.3s easy-out;
   background-color: white;
   z-index: 200;
+  transition: transform 0.3s easy-out;
 }
 
 @media (min-width: 500px) {

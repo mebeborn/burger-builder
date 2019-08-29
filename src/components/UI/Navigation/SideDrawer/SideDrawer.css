@@ -9,7 +9,8 @@
   padding: 36px 16px;
   background-color: white;
   z-index: 200;
-  transition: transform 0.3s easy-out;
+  transition: 0.3s easy-out transform;
+  transition-property: transform;
 }
 
 @media (min-width: 500px) {

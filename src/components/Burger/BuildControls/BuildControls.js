@@ -13,7 +13,6 @@ const buildControls = (props) => (
   <div className={classes.BuildControls}>
     <p><strong>{props.price.toFixed(2)}</strong></p>
     {controls.map(el => {
-      console.log(props.purchasable);
       return <BuildControl
         key={el.label}
         label={el.label}

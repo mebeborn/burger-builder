@@ -5,7 +5,7 @@ import clases from './MenuButton.css';
 const menuButton = (props) => {
   return (
     <div onClick={props.clicked} className={clases.MenuButton}>
-      <img src={icon} />
+      <img src={icon} alt="Burger Icon"/>
     </div>
   );
 }

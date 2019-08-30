@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import axios from '../axios-orders';
 import Aux from '../hoc/ReactAux';
 import Modal from '../components/UI/Modal/Modal';
+import Spinner from '../components/UI/Spinner/Spinner';
 import OrderSummary from '../components/Burger/OrderSummary/OrderSummry';
 
 import Burger from '../components/Burger/Burger';
@@ -23,6 +25,7 @@ class BurgerBuilder extends Component {
     },
     purchasable: false,
     purchasing: false,
+    loading: false,
     totalPrice: 2
   }
 
@@ -74,11 +77,41 @@ class BurgerBuilder extends Component {
   }
 
   orderContinueHandler = () => {
-    alert('Continued');
+    this.setState({ loading: true, purchasing: true });
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: 'Alex',
+        surname: 'Born'
+      },
+      deliveryType: 'fastest'
+    }
+
+    axios.post('/orders.json', order)
+      .then(response => {
+        this.setState({ loading: false, purchasing: false })
+      })
+      .catch(error => {
+        this.setState({ loading: false, purchasing: false })
+      });
+
   }
 
   render() {
     const disabledIngredients = { ...this.state.ingredients };
+
+    let orderSummary = (
+      <OrderSummary
+        orderCancelled={this.orderCancelHandler}
+        orderContinued={this.orderContinueHandler} price={this.state.totalPrice}
+        ingredients={this.state.ingredients}
+      />
+    );
+
+    if (this.state.loading) {
+      orderSummary = <Spinner />
+    }
 
     for (let key in disabledIngredients) {
       disabledIngredients[key] = !disabledIngredients[key];
@@ -87,7 +120,7 @@ class BurgerBuilder extends Component {
     return (
       <Aux>
         <Modal show={this.state.purchasing} modalClosed={this.orderCancelHandler}>
-          <OrderSummary orderCancelled={this.orderCancelHandler} orderContinued={this.orderContinueHandler} price={this.state.totalPrice} ingredients={this.state.ingredients} />
+          {orderSummary}
         </Modal>
         <Burger ingredients={this.state.ingredients} />
         <BuildControls

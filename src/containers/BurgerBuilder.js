@@ -18,16 +18,23 @@ const INGRIDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
   state = {
-    ingredients: {
-      meat: 0,
-      cheese: 0,
-      salad: 0,
-      bacon: 0
-    },
+    ingredients: null,
     purchasable: false,
     purchasing: false,
     loading: false,
+    error: false,
     totalPrice: 2
+  }
+
+  componentDidMount() {
+    axios.get('https://burger-builder-be25c.firebaseio.com/ingredients.json')
+      .then(res => {
+        this.setState({ ingredients: res.data })
+      })
+      .catch(error => {
+        console.log('error');
+        this.setState({ error: true })
+      });
   }
 
   addIngredientHandler = (type) => {
@@ -102,13 +109,32 @@ class BurgerBuilder extends Component {
   render() {
     const disabledIngredients = { ...this.state.ingredients };
 
-    let orderSummary = (
-      <OrderSummary
-        orderCancelled={this.orderCancelHandler}
-        orderContinued={this.orderContinueHandler} price={this.state.totalPrice}
-        ingredients={this.state.ingredients}
-      />
-    );
+    let content = this.state.error ? <p>Can't get ingredients</p> : <Spinner />;
+    let orderSummary = null;
+
+    if (this.state.ingredients) {
+      content = (
+        <Aux>
+          <Burger ingredients={this.state.ingredients} />
+          <BuildControls
+            ingredientAdded={this.addIngredientHandler}
+            ingredientRemoved={this.removeIngredientHandler}
+            disabledIngredients={disabledIngredients}
+            price={this.state.totalPrice}
+            purchasable={this.state.purchasable}
+            purchasing={this.orderHandler} />
+        </Aux>
+      );
+
+      orderSummary = (
+        <OrderSummary
+          orderCancelled={this.orderCancelHandler}
+          orderContinued={this.orderContinueHandler} 
+          price={this.state.totalPrice}
+          ingredients={this.state.ingredients} />
+      );
+    }
+
 
     if (this.state.loading) {
       orderSummary = <Spinner />
@@ -123,14 +149,9 @@ class BurgerBuilder extends Component {
         <Modal show={this.state.purchasing} modalClosed={this.orderCancelHandler}>
           {orderSummary}
         </Modal>
-        <Burger ingredients={this.state.ingredients} />
-        <BuildControls
-          ingredientAdded={this.addIngredientHandler}
-          ingredientRemoved={this.removeIngredientHandler}
-          disabledIngredients={disabledIngredients}
-          price={this.state.totalPrice}
-          purchasable={this.state.purchasable}
-          purchasing={this.orderHandler} />
+
+        {content}
+
       </Aux>
     )
   }

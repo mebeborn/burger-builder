@@ -13,6 +13,19 @@ class Checkout extends Component {
     }
   }
 
+  componentDidMount() {
+    const query = new URLSearchParams(this.props.location.search);
+    const ingredients = {};
+    console.log(query);
+    console.log(query.entries());
+
+    for(let param of query.entries()) {
+      ingredients[param[0]] = +param[1]
+    }
+
+    this.setState({ingredients});
+  }
+
   continueCkeckoutHandler = () => {
     this.props.history.replace('/checkout/contact-data');
   }

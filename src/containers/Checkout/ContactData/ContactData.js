@@ -15,7 +15,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       street: {
         elementType: 'input',
@@ -23,7 +27,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       zipCode: {
         elementType: 'input',
@@ -31,7 +39,13 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'ZIP Code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false
       },
       country: {
         elementType: 'input',
@@ -39,7 +53,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       email: {
         elementType: 'input',
@@ -47,7 +65,11 @@ class ContactData extends Component {
           type: 'email',
           placeholder: 'Your E-Mail'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -95,10 +117,30 @@ class ContactData extends Component {
     const updatedElementForm = { ...updatedOrderForm[id] };
 
     updatedElementForm.value = event.target.value;
+    updatedElementForm.valid = this.isValid(updatedElementForm.value, updatedElementForm.validation);
+    console.log(updatedElementForm);
 
     updatedOrderForm[id] = updatedElementForm;
 
     this.setState({ orderForm: updatedOrderForm });
+  }
+
+  isValid(value, rules) {
+    let valid = true;
+    if (rules.required) {
+      valid = value.trim() !== ""  && valid;
+    }
+
+    if (rules.minLength) {
+      valid = value.length >= rules.minLength && valid;
+
+    }
+
+    if (rules.maxLength) {
+      valid = value.length <= rules.minLength  && valid;
+    }
+
+    return valid;
   }
 
   render() {

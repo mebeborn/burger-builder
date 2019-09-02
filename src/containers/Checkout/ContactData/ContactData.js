@@ -82,14 +82,22 @@ class ContactData extends Component {
     axios.post('/orders.json', order)
       .then(response => {
         this.setState({ loading: false, purchasing: false });
-        console.log('ffffffffffff');
         this.props.history.push('/');
       })
       .catch(error => {
         this.setState({ loading: false, purchasing: false })
       });
-    console.log("444");
+  }
 
+  changedInputHandler = (event, id) => {
+    const updatedOrderForm = {...this.state.orderForm};
+    const updatedElementForm = {...updatedOrderForm[id]};
+
+    updatedElementForm.value = event.target.value;
+
+    updatedOrderForm[id] = updatedElementForm;
+    
+    this.setState({orderForm: updatedOrderForm});
   }
 
   render() {
@@ -110,7 +118,8 @@ class ContactData extends Component {
           <Input key={element.id}
             elementType={element.config.elementType}
             elementConfig={element.config.elementConfig}
-            value={element.config.elementConfig.placeholder} />
+            value={element.config.value}
+            changed={(event) => this.changedInputHandler(event, element.id)} />
         ))}
         <Button clicked={this.orderHandler} btnType='Success'>ORDER</Button>
       </form>

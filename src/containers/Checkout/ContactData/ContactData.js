@@ -66,16 +66,17 @@ class ContactData extends Component {
   orderHandler = (event) => {
     event.preventDefault();
 
+    const formData = {};
+    for (let formElement in this.state.orderForm) {
+      formData[formElement] = this.state.orderForm[formElement].value;
+    }
+
     this.setState({ loading: true, purchasing: true });
 
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      customer: {
-        name: 'Alex',
-        surname: 'Born'
-      },
-      deliveryType: 'fastest'
+      orderData: formData
     }
 
 
@@ -90,14 +91,14 @@ class ContactData extends Component {
   }
 
   changedInputHandler = (event, id) => {
-    const updatedOrderForm = {...this.state.orderForm};
-    const updatedElementForm = {...updatedOrderForm[id]};
+    const updatedOrderForm = { ...this.state.orderForm };
+    const updatedElementForm = { ...updatedOrderForm[id] };
 
     updatedElementForm.value = event.target.value;
 
     updatedOrderForm[id] = updatedElementForm;
-    
-    this.setState({orderForm: updatedOrderForm});
+
+    this.setState({ orderForm: updatedOrderForm });
   }
 
   render() {
@@ -110,10 +111,8 @@ class ContactData extends Component {
       });
     }
 
-    console.log(formArrayElements);
-
     let form = (
-      <form>
+      <form onSubmit={this.orderHandler}>
         {formArrayElements.map(element => (
           <Input key={element.id}
             elementType={element.config.elementType}
@@ -121,7 +120,7 @@ class ContactData extends Component {
             value={element.config.value}
             changed={(event) => this.changedInputHandler(event, element.id)} />
         ))}
-        <Button clicked={this.orderHandler} btnType='Success'>ORDER</Button>
+        <Button btnType='Success'>ORDER</Button>
       </form>
     );
 
